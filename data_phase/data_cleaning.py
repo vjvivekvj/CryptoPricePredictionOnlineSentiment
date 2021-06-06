@@ -4,7 +4,7 @@ import csv
 #add attribute status
 
 def remove_attribute(attr):
-	f = open("dataset.csv")
+	f = open("results/dataset.csv")
 	data = f.readlines()
 	index_to_remove = 0
 	print('removing attribute'+attr)
@@ -17,9 +17,9 @@ def remove_attribute(attr):
 	f.close()
 
 def create_cleaned_dataset(indices_to_exclude):
-	f = open("dataset.csv")
+	f = open("results/dataset.csv")
 	data = f.readlines()
-	o = open("cleaned_dataset.csv","w", newline='')
+	o = open("results/cleaned_dataset.csv","w", newline='')
 	writer = csv.writer(o)
 	for line in data:
 		line = line.rstrip().split(",")
@@ -32,7 +32,7 @@ def create_cleaned_dataset(indices_to_exclude):
 	o.close()
 
 if __name__ == "__main__":
-	attributes_to_remove = ['RATE','LAST']
+	attributes_to_remove = ['RATE','LAST','Timestamp']
 	indices_to_remove = []
 	for attr in attributes_to_remove:
 		indices_to_remove.append(remove_attribute(attr))
