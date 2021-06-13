@@ -16,7 +16,7 @@ def collect_data(link):
 
 def create_csv(result):
 	print("Adding values to csv")
-	f = open("dataset.csv", "a")
+	f = open("dataset.csv", "w", newline = '')
 	writer = csv.writer(f)
 	for entry in result:
 		data = []

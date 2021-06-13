@@ -1,10 +1,11 @@
 import pandas as pd
-csv_input = pd.read_csv('results/cleaned_dataset.csv')
+csv_input = pd.read_csv('data_phase/results/cleaned_dataset.csv')
 
 price = 'BTC_PRICE'
 changes = [0]
 pchange = [0]
 trend = [0]
+pbtc = [0]
 for i in range(1,len(csv_input)):
     if csv_input[price][i] - csv_input[price][i-1] > 0:
         changes.append(1)
@@ -19,10 +20,11 @@ for i in range(1,len(csv_input)):
     
     _pchange = ((csv_input[price][i] - csv_input[price][i-1])/csv_input[price][i-1]) * 100
     pchange.append("{:.2f}".format(_pchange))
+    pbtc.append(csv_input[price][i-1])
     
     
 csv_input['CHANGE'] = changes
 csv_input['PCHANGE'] = pchange
 csv_input['TREND'] = trend
-    
-csv_input.to_csv('results/transformed_dataset.csv', index=False)
+csv_input['PBTC'] = pbtc
+csv_input.to_csv('data_phase/results/transformed_dataset.csv', index=False)

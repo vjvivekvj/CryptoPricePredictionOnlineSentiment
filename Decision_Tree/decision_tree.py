@@ -3,8 +3,8 @@ from sklearn import tree
 from sklearn.tree import _tree
 
 default_df = pd.read_csv("discretization/results/discretized_dataframe.csv")
-target_f = pd.read_csv("data_phase/results/transformed_dataset.csv")
-target_df= target_f['CHANGE']
+input_df = default_df.drop('BTC_PRICE', axis='columns')
+target_df= default_df['BTC_PRICE']
 
 
 class DTree:
@@ -15,11 +15,12 @@ class DTree:
         self.rule_list = []
         self.ante_list = []
         self.conse_list = []
-    def generate_model(self, input, target):
-        self.model.fit(input, target)
+        
+    def generate_model(self, inputs=input_df, target=target_df):
+        self.model.fit(inputs, target)
         self.isFit = True
     
-    def model_score(self,inputs,target):
+    def model_score(self,inputs=input_df,target=target_df):
         if self.isFit:
             return self.model.score(inputs,target)
         else:
@@ -50,10 +51,15 @@ class DTree:
         return self.rule_list, self.conse_list
     
     def create_rules(self):
+        rules_df = input_df.drop('SUM', axis='columns')
+        rules_df = rules_df.drop('COUNT', axis='columns')
+        rules_df = rules_df.drop('CHANGE', axis='columns')
+        rules_df = rules_df.drop('PCHANGE', axis='columns')
+      
         if not self.isFit:
-            self.generate_model(input = default_df, target = target_df)
+            self.generate_model(inputs = rules_df, target = target_df)
     
-        return self.tree_to_code(self.model, default_df.columns.tolist())
+        return self.tree_to_code(self.model, rules_df.columns.tolist())
     
 #dobj = DTree()
 #dobj.create_rules()

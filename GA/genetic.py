@@ -3,22 +3,16 @@ from random import randint
 from random import sample
 from random import random
 
-n_attr = 7
+
 
 class Genetic:
     
     def __init__(self):
-        self.Genome = []                #list of bits
         self.population = []            #list of genomes
         self.mutation_rate = 0.2
         self.fitness_dict = {}
-        
-    def generate_genome(self):
-        #Genome - representation of bins for all attributes
-        #4 genes will represent a bin
-        #first bit for each bin is type of binning
-        #next three bits is the number of bins
-        return choices([0,1], k= n_attr*4)
+        self.n_attr = 8
+
         
     def create_population(self, size):
         #call generate genome
@@ -33,16 +27,16 @@ class Genetic:
         self.population = []
         #add 25% fittest 
         for g in sorted_fit:
-            self.population.append(sorted_fit[g]) 
+            self.population.append(self.fitness_dict[g]) 
             i += 1
             if(i >= len(sorted_fit)/4):
                 break
         #add 25% random (remaining 50% child by doing crossover())
-        self.create_population(int(len(sorted_fit))/2 - i)
+        self.create_population(int(len(sorted_fit)/2) - i)
         
     
     def crossover(self):
-        for i in range((self.size - len(self.population))/2):
+        for i in range((self.size - len(self.population))//2):
             #select two parents randomly
             parent = sample(self.population,2)
             a = parent[0] ; b = parent[1]
@@ -57,7 +51,8 @@ class Genetic:
         #pick a random genome 
         genome = sample(self.population,1)
         #pick a random index and change its bit
-        index = randint(1, len(genome)-1)
+        #index = randint(1, len(genome)-1)
+        index = 0
         if random() < self.mutation_rate:
             genome[index] = abs(genome[index]-1)
         
@@ -69,20 +64,21 @@ class Genetic:
             
             self.create_population(p_size)
             for genome in self.population:
+              #  print('checking ', genome)
                 if self.fitness(genome) >= f_min:
                     print('genome with given fmin found ', "".join(map(str,genome)), ' in ', generation, ' generation')
-                    return 
+                    return ("".join(map(str,genome)),self.fitness(genome),generation)
             # create new population         - selection selects the genomes for new population
             self.selection()
             # add more children             - crossover adds new genomes in the new population
             self.crossover()
             # mutate                        - mutation flips genes of a random genome
-            self.mutation()
+            #self.mutation()                - theres some error , will be fixed 
             
             if generation >= g_max:
                 print('no genome with given fitness value found')
                 print('Increase no. of generations or dec fmin')
-                return 
+                return (0,0,0)
             
             self.fitness_dict = {} 
         return
